@@ -1,25 +1,22 @@
 import numpy as np
-import scipy.ndimage.filters
 from PIL import Image
 import matplotlib.pyplot as plt
 
 def sobel_edge_detection(img_array):
-    # matrix = np.asarray([[-1, 0, 1],[-2, 0, 2],[-1, 0, 1]])
-    # result = scipy.ndimage.filters.convolve(img_array, matrix)
    
     Gx = np.array([[1.0, 0.0, -1.0], [2.0, 0.0, -2.0], [1.0, 0.0, -1.0]])
     Gy = np.array([[1.0, 2.0, 1.0], [0.0, 0.0, 0.0], [-1.0, -2.0, -1.0]])
     [rows, columns] = np.shape(img_array)
-    sobel_filtered_image = np.zeros(shape=(rows, columns))
+    result = np.zeros(shape=(rows, columns))
 
-
+    
     for i in range(rows - 2):
         for j in range(columns - 2):
-            gx = np.sum(np.multiply(Gx, img_array[i:i + 3, j:j + 3]))  # x direction
-            gy = np.sum(np.multiply(Gy, img_array[i:i + 3, j:j + 3]))  # y direction
-            sobel_filtered_image[i + 1, j + 1] = np.sqrt(gx ** 2 + gy ** 2)  # calculate the "hypotenuse"
+            gx = np.sum(np.multiply(Gx, img_array[i:i + 3, j:j + 3]))
+            gy = np.sum(np.multiply(Gy, img_array[i:i + 3, j:j + 3]))
+            result[i + 1, j + 1] = np.hypot(gx, gy)
 
-    result = np.clip(sobel_filtered_image, 0, 255)
+    result = np.clip(result, 0, 255)
     
     return result
 
