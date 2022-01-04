@@ -3,13 +3,6 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-Lap_1 = np.ones((3,3))*(-1)
-Lap_1[1,1] = 8
-
-Lap_2 = np.ones((3,3))*(-1)
-Lap_2[1,1] = -4
-Lap_2[0,1] = Lap_2[1,0] = Lap_2[1,2] = Lap_2[2,1] = 22
-
 def sobel_edge_detection(img_array):
    
     Gx = np.array([[1.0, 0.0, -1.0], [2.0, 0.0, -2.0], [1.0, 0.0, -1.0]])
@@ -70,9 +63,7 @@ def apply_gaussian_filter(img, sigma):
     return blurred
 
 
-def LoG_edge_detection(img_array):
-    sigma = 2
-    kernel = Lap_1
+def LoG_edge_detection(img_array,sigma,kernel):
     blurred = apply_gaussian_filter(img_array, sigma)
     blur_padded = pad(blurred, 2)
     rows, cols = blur_padded.shape
@@ -92,7 +83,7 @@ def LoG_edge_detection(img_array):
     
     return result
 
-def showResult(img):
+def showResult(img, sigma, kernel):
     img_array = np.array(img)
     plt.figure(figsize=(10,10))
     
@@ -109,12 +100,22 @@ def showResult(img):
     plt.subplot(1,3,3)
     plt.title("Laplacian of a Gaussian (LoG)")
     plt.axis('off')
-    plt.imshow(Image.fromarray(np.uint8(LoG_edge_detection(img_array))))
+    LoG = LoG_edge_detection(img_array, sigma, kernel)
+    plt.imshow(Image.fromarray(np.uint8(LoG)))
     
     return
 
-showResult(Image.open('HW4_test_image\image1.jpg').convert('L'))
-showResult(Image.open('HW4_test_image\image2.jpg').convert('L'))
-showResult(Image.open('HW4_test_image\image3.jpg').convert('L'))
+Lap_1 = np.ones((3,3))*(-1)
+Lap_1[1,1] = 8
+
+Lap_2 = np.ones((3,3))*(-1)
+Lap_2[1,1] = -4
+Lap_2[0,1] = Lap_2[1,0] = Lap_2[1,2] = Lap_2[2,1] = 2
+
+# showResult(Image.open('HW4_test_image\image1.jpg').convert('L'), 2, Lap_1)
+showResult(Image.open('HW4_test_image\image2.jpg').convert('L'), 1, Lap_1)
+showResult(Image.open('HW4_test_image\image2.jpg').convert('L'), 2, Lap_1)
+showResult(Image.open('HW4_test_image\image2.jpg').convert('L'), 3, Lap_1)
+# showResult(Image.open('HW4_test_image\image3.jpg').convert('L'))
 
 plt.show()
